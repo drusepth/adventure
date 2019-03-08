@@ -1,4 +1,4 @@
-function Objective() {
+function GameObject() {
   this.x = 0;
   this.y = 0;
   this.color = null;
@@ -111,13 +111,13 @@ function Objective() {
       world[coordinates_to_paint[i]] = this.reward;
     }
 
-    // Re-use this objective instead of making a new one + garbage collecting
+    // Re-use this game_object instead of making a new one + garbage collecting
     this.set_position(random_location());
     this.randomize_color();
   };
 
   this.reward_coordinate_vectors = function () {
-    // todo other shapes depending on the objective and/or a property on it?
+    // todo other shapes depending on the game_object and/or a property on it?
     // e.g. river = 3-4 in a line
 
     return [

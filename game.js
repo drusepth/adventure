@@ -1,14 +1,14 @@
 var player;
 var tile_scale = 20;
-var expansion_radius;
+var vision_radius;
 var draw_world_grid = true;
 var draw_player = true;
-var draw_objectives = true;
+var draw_game_objects = true;
 var drawn_world = {};
 var game_paused = false;
 
-var objective_count = 25;
-var objectives = [];
+var game_object_count = 25;
+var game_objects = [];
 var canvas;
 
 function setup() {
@@ -17,23 +17,26 @@ function setup() {
     floor(window.innerHeight / tile_scale) * tile_scale + tile_scale
   );
   canvas.parent('game');
-  frameRate(10);
+  frameRate(60);
 
-  expansion_radius = floor(height / tile_scale) * floor(width / tile_scale) / random(300, 400);
+  vision_radius = floor(height / tile_scale) * floor(width / tile_scale) / random(300, 400);
 
-  player = new Snake();
-  for (var i = 0; i < objective_count; i++) {
-    var objective = new Objective();
-    objective.set_position(random_location());
-    objective.randomize_color();
-    objectives.push(objective);
+  // Create player
+  player = new Player();
+
+  // Create initial world
+  for (var i = 0; i < game_object_count; i++) {
+    var game_object = new GameObject();
+    game_object.set_position(random_location());
+    game_object.randomize_color();
+    game_objects.push(game_object);
   }
 }
 
 function random_location() {
   return createVector(
-    floor(random(player.x - expansion_radius, player.x + expansion_radius)),
-    floor(random(player.y - expansion_radius, player.y + expansion_radius))
+    floor(random(player.x - vision_radius, player.x + vision_radius)),
+    floor(random(player.y - vision_radius, player.y + vision_radius))
   );
 }
 
@@ -81,17 +84,17 @@ function draw() {
   // After we're done, reset stroke back to the default black
   stroke(0, 0, 0);
 
-  // Game logic: check for objective captures
-  for (var i = 0; i < objectives.length; i++) {
-    var objective = objectives[i];
-    //console.log('Objective:', objective.x, objective.y);
-    // todo loop over anyone that can capture objectives here, not just player
-    if (player.capture_objective(objective)) {
-      objective.capture(player, drawn_world);
-    }
-  }
+  // Game logic: check for game_object captures
+  // for (var i = 0; i < game_objects.length; i++) {
+  //   var game_object = game_objects[i];
+  //   //console.log('game_object:', game_object.x, game_object.y);
+  //   // todo loop over anyone that can capture game_objects here, not just player
+  //   if (player.capture_game_object(game_object)) {
+  //     game_object.capture(player, drawn_world);
+  //   }
+  // }
 
-  // Paint player and the objectives last, so they're always on top of the painted world
+  // Paint player and the game_objects last, so they're always on top of the painted world
   if (draw_player) {
     player.show();
   }
@@ -99,21 +102,21 @@ function draw() {
   // Do a quick health check to end the game if we're dead
   player.health_check();
 
-  // Draw all the objectives we can capture
-  if (draw_objectives) {
-    for (var i = 0; i < objectives.length; i++) {
-      var objective = objectives[i];
-      var objective_color = objective.pre_capture_color();
-      var relative_coordinates = createVector(objective.x - x_translation, objective.y - y_translation);
-      //console.log("Drawing objective @", relative_coordinates.x, relative_coordinates.y);
-      fill(objective_color.x, objective_color.y, objective_color.z);
+  // Draw all the game_objects we can capture
+  if (draw_game_objects) {
+    for (var i = 0; i < game_objects.length; i++) {
+      var game_object = game_objects[i];
+      var game_object_color = game_object.pre_capture_color();
+      var relative_coordinates = createVector(game_object.x - x_translation, game_object.y - y_translation);
+      //console.log("Drawing game_object @", relative_coordinates.x, relative_coordinates.y);
+      fill(game_object_color.x, game_object_color.y, game_object_color.z);
 
-      // todo objective image in the circle
+      // todo game_object image in the circle
       ellipse(
         relative_coordinates.x * tile_scale + (tile_scale / 2),
         relative_coordinates.y * tile_scale + (tile_scale / 2),
-        tile_scale * preferences.graphics.objective_scale,
-        tile_scale * preferences.graphics.objective_scale
+        tile_scale * preferences.graphics.game_object_scale,
+        tile_scale * preferences.graphics.game_object_scale
       );
     }
   }
@@ -171,7 +174,7 @@ function keyPressed() {
       player.xspeed = 0;
       player.yspeed = 0;
       draw_player = false;
-      draw_objectives = false;
+      draw_game_objects = false;
 
       draw();
 
@@ -180,7 +183,7 @@ function keyPressed() {
       player.xspeed = original_xspeed;
       player.yspeed = original_yspeed;
       draw_player = true;
-      draw_objectives = true;
+      draw_game_objects = true;
 
       var img = document.createElement('img');
       img.src = canvas_export;

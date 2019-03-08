@@ -1,4 +1,4 @@
-function Snake() {
+function Player() {
   this.x = 0;
   this.y = 0;
   this.xspeed = 0;
@@ -63,8 +63,8 @@ function Snake() {
     }
   }
 
-  this.capture_objective = function (objective) {
-    var distance = dist(this.x, this.y, objective.x, objective.y);
+  this.capture_game_object = function (game_object) {
+    var distance = dist(this.x, this.y, game_object.x, game_object.y);
 
     if (distance < 1) {
       this.total++;
@@ -74,10 +74,10 @@ function Snake() {
 
       if (this.total % 2 == 0) {
         console.log('new obj');
-        var new_objective = new Objective();
-        new_objective.set_position(random_location());
-        new_objective.randomize_color();
-        objectives.push(new_objective);
+        var new_game_object = new GameObject();
+        new_game_object.set_position(random_location());
+        new_game_object.randomize_color();
+        game_objects.push(new_game_object);
       }
 
       return true;

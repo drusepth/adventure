@@ -1,5 +1,5 @@
 var preferences = {
   graphics: {
-    objective_scale: 1.000
+    game_object_scale: 1.000
   }
 };
