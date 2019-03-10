@@ -76,7 +76,7 @@ function draw() {
       var relative_coordinates = createVector(this_cell_position.x - x_translation, this_cell_position.y - y_translation);
       var cell_data = world.tiles[this_cell_position] || null;
       if (cell_data === null) {
-        world.tiles[this_cell_position] = world.random_tile(cell_data);
+        world.tiles[this_cell_position] = World.random_tile(cell_data);
         cell_data = world.tiles[this_cell_position];
       }
 

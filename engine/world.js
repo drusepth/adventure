@@ -1,15 +1,17 @@
-function World() {
-  this.tiles = {};
-  
-  this.TILE_WATER     = createVector(25, 105, 255);
-  this.TILE_SAND      = createVector(194, 178, 128);
-  this.TILE_GRASS     = createVector(144, 238, 144);
-  this.TILE_DIRT      = createVector(237, 201, 175);
-  this.TILE_FOREST    = createVector(34, 139, 34);
-  this.TILE_MOUNTAINS = createVector(128, 128, 128);
-  this.TILE_INVISIBLE = createVector(0, 0, 0, 0);
+class World {
+  constructor() {
+    this.tiles = {};
 
-  this.random_tile = function (current_tile) {
+    this.TILE_WATER     = createVector(25, 105, 255);
+    this.TILE_SAND      = createVector(194, 178, 128);
+    this.TILE_GRASS     = createVector(144, 238, 144);
+    this.TILE_DIRT      = createVector(237, 201, 175);
+    this.TILE_FOREST    = createVector(34, 139, 34);
+    this.TILE_MOUNTAINS = createVector(128, 128, 128);
+    this.TILE_INVISIBLE = createVector(0, 0, 0, 0);
+  }
+
+  static random_tile(current_tile) {
     if (current_tile === undefined || current_tile === null) {
         return this.random_selection([
           world.TILE_GRASS,
@@ -82,13 +84,13 @@ function World() {
     }
   }
   
-  this.comparable_vector = function(vector) {
+  static comparable_vector(vector) {
     return vector.x + '-' + vector.y + '-' + vector.z;
-  };
+  }
   
-  this.random_selection = function(options_list) {
+  static random_selection(options_list) {
     var chosen_option = floor(random(options_list.length));
     return options_list[chosen_option];
-  };
+  }
 }
 

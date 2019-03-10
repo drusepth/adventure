@@ -17,7 +17,7 @@ function GameObject() {
 
   this.randomize_color = function() {
     var current_world_tile = world.tiles[this.coordinate_vector()];
-    this.reward = world.random_tile(current_world_tile);
+    this.reward = World.random_tile(current_world_tile);
   }
 
   this.coordinate_vector = function() {
