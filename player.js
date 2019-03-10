@@ -6,6 +6,8 @@ function Player() {
   this.heartrate = 25;
   this.party_members = [];
   this.party_total   = 0;
+  this.height = 1;
+  this.width  = 1;
 
   // Preload images (needs a local server because cors lol)
   // this.assets = {
@@ -23,6 +25,9 @@ function Player() {
 
     this.x = this.x + this.xspeed;
     this.y = this.y + this.yspeed;
+
+    this.xspeed = 0;
+    this.yspeed = 0;
   };
 
   this.show = function() {
@@ -36,7 +41,12 @@ function Player() {
     for (var i = 0; i < this.party_members.length; i++) {
       if (this.party_members[i] !== undefined) {
         var relative_position = createVector(this.party_members[i].x - x_translation, this.party_members[i].y - y_translation);
-        rect(relative_position.x * tile_scale, relative_position.y * tile_scale, tile_scale, tile_scale);
+        rect(
+          relative_position.x * tile_scale, 
+          relative_position.y * tile_scale, 
+          tile_scale, 
+          tile_scale
+        );
       }
     }
 
@@ -45,10 +55,10 @@ function Player() {
     var game_tick = tick_index || 0;
     var tick_size_flux = 1 + Math.sin(game_tick * this.heartrate);
     rect(
-      floor(cols / 2) * tile_scale - floor(tick_size_flux), 
-      floor(rows / 2) * tile_scale - floor(tick_size_flux), 
-      tile_scale + tick_size_flux, 
-      tile_scale + tick_size_flux
+      floor(cols / 2) * tile_scale - floor(tick_size_flux) - floor(this.width / 2), 
+      floor(rows / 2) * tile_scale - floor(tick_size_flux) - floor(this.height / 2), 
+      this.width * tile_scale + tick_size_flux, 
+      this.height * tile_scale + tick_size_flux
     );
   };
 

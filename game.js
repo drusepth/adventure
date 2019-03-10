@@ -1,5 +1,5 @@
 var player;
-var tile_scale = 20;
+var tile_scale = 16;
 var vision_radius;
 var draw_world_grid = true;
 var draw_player = true;
@@ -118,8 +118,8 @@ function draw() {
       ellipse(
         relative_coordinates.x * tile_scale + (tile_scale / 2),
         relative_coordinates.y * tile_scale + (tile_scale / 2),
-        tile_scale * preferences.graphics.game_object_scale,
-        tile_scale * preferences.graphics.game_object_scale
+        game_object.width * tile_scale * preferences.graphics.game_object_scale,
+        game_object.height * tile_scale * preferences.graphics.game_object_scale
       );
     }
   }
