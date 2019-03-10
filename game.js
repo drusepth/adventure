@@ -10,6 +10,7 @@ var game_paused = false;
 var game_object_count = 25;
 var game_objects = [];
 var canvas;
+var tick_index = 0;
 
 function setup() {
   canvas = createCanvas(
@@ -89,8 +90,8 @@ function draw() {
   //   var game_object = game_objects[i];
   //   //console.log('game_object:', game_object.x, game_object.y);
   //   // todo loop over anyone that can capture game_objects here, not just player
-  //   if (player.capture_game_object(game_object)) {
-  //     game_object.capture(player, drawn_world);
+  //   if (player.interaction_check(game_object)) {
+  //     game_object.interact_with(player, drawn_world);
   //   }
   // }
 
@@ -99,6 +100,8 @@ function draw() {
     player.show();
   }
 
+  tick_index++;
+
   // Do a quick health check to end the game if we're dead
   player.health_check();
 
@@ -106,7 +109,7 @@ function draw() {
   if (draw_game_objects) {
     for (var i = 0; i < game_objects.length; i++) {
       var game_object = game_objects[i];
-      var game_object_color = game_object.pre_capture_color();
+      var game_object_color = game_object.display_color();
       var relative_coordinates = createVector(game_object.x - x_translation, game_object.y - y_translation);
       //console.log("Drawing game_object @", relative_coordinates.x, relative_coordinates.y);
       fill(game_object_color.x, game_object_color.y, game_object_color.z);

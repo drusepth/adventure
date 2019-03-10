@@ -10,9 +10,10 @@ function GameObject() {
   this.TILE_DIRT      = createVector(237, 201, 175);
   this.TILE_FOREST    = createVector(34, 139, 34);
   this.TILE_MOUNTAINS = createVector(128, 128, 128);
+  this.TILE_INVISIBLE = createVector(0, 0, 0, 0);
 
-  this.pre_capture_color = function () {
-    return this.reward || this.TILE_WATER;
+  this.display_color = function () {
+    return this.reward || this.TILE_INVISIBLE;
   };
 
   this.set_position = function(coordinate_vector) {
@@ -105,7 +106,7 @@ function GameObject() {
     return createVector(this.x, this.y);
   };
 
-  this.capture = function(who_captured, world) {
+  this.interact_with = function(who_captured, world) {
     var coordinates_to_paint = this.reward_coordinate_vectors();
     for (var i = 0; i < coordinates_to_paint.length; i++) {
       world[coordinates_to_paint[i]] = this.reward;
