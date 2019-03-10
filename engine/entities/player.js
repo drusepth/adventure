@@ -1,20 +1,22 @@
-function Player() {
-  this.x = 0;
-  this.y = 0;
-  this.xspeed = 0;
-  this.yspeed = 0;
-  this.heartrate = 25;
-  this.party_members = [];
-  this.party_total   = 0;
-  this.height = 1;
-  this.width  = 1;
+class Player {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.xspeed = 0;
+    this.yspeed = 0;
+    this.heartrate = 25;
+    this.party_members = [];
+    this.party_total   = 0;
+    this.height = 1;
+    this.width  = 1;
+  }
 
   // Preload images (needs a local server because cors lol)
   // this.assets = {
   //   snake_head: loadImage('images/snake_head.png')
   // };
 
-  this.update = function() {
+  update() {
     // Build party
     if (this.party_total === this.party_members.length) {
       for (var i = 0; i < this.party_members.length - 1; i++) {
@@ -28,9 +30,9 @@ function Player() {
 
     this.xspeed = 0;
     this.yspeed = 0;
-  };
+  }
 
-  this.show = function() {
+  show() {
     var cols = floor(width / tile_scale);
     var rows = floor(height / tile_scale);
     var center_point = createVector(floor(cols / 2), floor(rows / 2));
@@ -60,14 +62,14 @@ function Player() {
       this.width * tile_scale + tick_size_flux, 
       this.height * tile_scale + tick_size_flux
     );
-  };
+  }
 
-  this.turn_to = function(x, y) {
+  turn_to(x, y) {
     this.xspeed = x;
     this.yspeed = y;
-  };
+  }
 
-  this.current_direction = function () {
+  current_direction() {
     if (this.xspeed == 0 && this.yspeed == -1) {
       return 'up';
     } else if (this.xspeed == 0 && this.yspeed == 1) {
@@ -79,18 +81,18 @@ function Player() {
     } else {
       console.log(this.xspeed, this.yspeed);
     }
-  };
+  }
 
-  this.interaction_check = function (game_object) {
+  interaction_check(game_object) {
     // These will both check AND execute-if-true for each interaction event type
     return {
       standing_on: this.is_standing_on_game_object(game_object),
-      touching:    this.touch_game_object(game_object),
-      actioning:   this.action_game_object(game_object)
+      touching:    this.is_touching_game_object(game_object),
+      actioning:   this.is_actioning_game_object(game_object)
     };
-  };
+  }
 
-  this.is_standing_on_game_object = function (game_object) {
+  is_standing_on_game_object(game_object) {
     var distance = dist(this.x, this.y, game_object.x, game_object.y);
 
     if (distance < 1) {
@@ -111,25 +113,31 @@ function Player() {
     } else {
       return false;
     }
-  };
+  }
 
-  this.event_stand_on = function (game_object) {
-
-  };
-
-  this.touch_game_object = function (game_object) {
+  is_touching_game_object(game_object) {
     // todo adjacent tile (just do distance == 0 from above, maybe hotcache distance)
-  };
+  }
 
-  this.action_game_object = function (game_object, action) {
+  is_actioning_game_object(game_object, action) {
     // todo touching && action button (&action() proc) is true 
-  };
+  }
 
-  this.health_check = function () {
+  event_stand_on(game_object) {
+    game_object.interact_with(player);
+  }
+  event_touch(game_object) {
+
+  }
+  event_action(game_object) {
+
+  }
+
+  health_check() {
     this.death();
-  };
+  }
 
-  this.death = function() {
+  death() {
     for (var i = 0; i < this.party_members.length; i++) {
       var pos = this.party_members[i];
       if (pos === undefined) {

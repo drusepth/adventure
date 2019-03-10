@@ -1,30 +1,32 @@
-function GameObject() {
-  this.x = 0;
-  this.y = 0;
-  this.width = 1;
-  this.height = 1;
-  this.color = null;
-  this.reward = null;
+class GameObject {
+  constructor() {
+    this.x = 0;
+    this.y = 0;
+    this.width = 1;
+    this.height = 1;
+    this.color = null;
+    this.reward = null;
+  }
 
-  this.display_color = function () {
+  display_color() {
     return this.reward || world.TILE_INVISIBLE;
-  };
+  }
 
-  this.set_position = function(coordinate_vector) {
+  set_position(coordinate_vector) {
     this.x = coordinate_vector.x;
     this.y = coordinate_vector.y;
-  };
+  }
 
-  this.randomize_color = function() {
+  randomize_color() {
     var current_world_tile = world.tiles[this.coordinate_vector()];
     this.reward = World.random_tile(current_world_tile);
   }
 
-  this.coordinate_vector = function() {
+  coordinate_vector() {
     return createVector(this.x, this.y);
-  };
+  }
 
-  this.interact_with = function(who_captured, world) {
+  interact_with(who_captured) {
     var coordinates_to_paint = this.reward_coordinate_vectors();
     for (var i = 0; i < coordinates_to_paint.length; i++) {
       world[coordinates_to_paint[i]] = this.reward;
@@ -33,9 +35,9 @@ function GameObject() {
     // Re-use this game_object instead of making a new one + garbage collecting
     this.set_position(random_location());
     this.randomize_color();
-  };
+  }
 
-  this.reward_coordinate_vectors = function () {
+  reward_coordinate_vectors() {
     // todo other shapes depending on the game_object and/or a property on it?
     // e.g. river = 3-4 in a line
 
@@ -57,5 +59,5 @@ function GameObject() {
       createVector(this.x + 1, this.y - 1),
       createVector(this.x + 1, this.y + 1)
     ];
-  };
+  }
 }
