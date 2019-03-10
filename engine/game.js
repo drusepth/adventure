@@ -4,11 +4,11 @@ var vision_radius;
 var draw_world_grid = true;
 var draw_player = true;
 var draw_game_objects = true;
-var drawn_world = {};
 var game_paused = false;
 
 var game_object_count = 25;
 var game_objects = [];
+var world;
 var canvas;
 var tick_index = 0;
 
@@ -26,6 +26,7 @@ function setup() {
   player = new Player();
 
   // Create initial world
+  world = new World();
   for (var i = 0; i < game_object_count; i++) {
     var game_object = new GameObject();
     game_object.set_position(random_location());
@@ -73,7 +74,12 @@ function draw() {
     for (var x = upper_left_boundary.x; x < bottom_right_boundary.x; x++) {
       var this_cell_position = createVector(x, y);
       var relative_coordinates = createVector(this_cell_position.x - x_translation, this_cell_position.y - y_translation);
-      var cell_data = drawn_world[this_cell_position] || null;
+      var cell_data = world.tiles[this_cell_position] || null;
+      if (cell_data === null) {
+        world.tiles[this_cell_position] = world.random_tile(cell_data);
+        cell_data = world.tiles[this_cell_position];
+      }
+
       if (cell_data !== null) {
         fill(cell_data.x, cell_data.y, cell_data.z);
 
@@ -86,14 +92,22 @@ function draw() {
   stroke(0, 0, 0);
 
   // Game logic: check for game_object captures
-  // for (var i = 0; i < game_objects.length; i++) {
-  //   var game_object = game_objects[i];
-  //   //console.log('game_object:', game_object.x, game_object.y);
-  //   // todo loop over anyone that can capture game_objects here, not just player
-  //   if (player.interaction_check(game_object)) {
-  //     game_object.interact_with(player, drawn_world);
-  //   }
-  // }
+  for (var i = 0; i < game_objects.length; i++) {
+    var game_object = game_objects[i];
+    //console.log('game_object:', game_object.x, game_object.y);
+    // todo loop over anyone that can capture game_objects here, not just player
+    var interaction_check = player.interaction_check(game_object);
+
+    if (!!interaction_check['standing_on']) {
+      player.event_stand_on(game_object);
+    }
+    if (!!interaction_check['touching']) {
+      player.event_touch(game_object);
+    }
+    if (!!interaction_check['actioning']) {
+      player.event_action(game_object);
+    }
+  }
 
   // Paint player and the game_objects last, so they're always on top of the painted world
   if (draw_player) {
@@ -101,6 +115,9 @@ function draw() {
   }
 
   tick_index++;
+  if (tick_index > 5000) {
+    tick_index -= 5000;
+  }
 
   // Do a quick health check to end the game if we're dead
   player.health_check();

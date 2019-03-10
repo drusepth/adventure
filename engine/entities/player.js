@@ -84,13 +84,13 @@ function Player() {
   this.interaction_check = function (game_object) {
     // These will both check AND execute-if-true for each interaction event type
     return {
-      standing_on: this.stand_on_game_object(game_object),
+      standing_on: this.is_standing_on_game_object(game_object),
       touching:    this.touch_game_object(game_object),
       actioning:   this.action_game_object(game_object)
     };
   };
 
-  this.stand_on_game_object = function (game_object) {
+  this.is_standing_on_game_object = function (game_object) {
     var distance = dist(this.x, this.y, game_object.x, game_object.y);
 
     if (distance < 1) {
@@ -111,6 +111,10 @@ function Player() {
     } else {
       return false;
     }
+  };
+
+  this.event_stand_on = function (game_object) {
+
   };
 
   this.touch_game_object = function (game_object) {
