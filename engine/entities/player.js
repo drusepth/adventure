@@ -9,6 +9,8 @@ class Player {
     this.party_total   = 0;
     this.height = 1 * preferences.graphics.game_object_scale;
     this.width  = 1 * preferences.graphics.game_object_scale;
+
+    this.vision_radius = 10;
   }
 
   // Preload images (needs a local server because cors lol)
@@ -104,7 +106,7 @@ class Player {
       if (this.party_total % 2 == 0) {
         console.log('new obj');
         var new_game_object = new GameObject();
-        new_game_object.set_position(random_location());
+        new_game_object.set_position(random_location_in_viewport());
         new_game_object.randomize_color();
         game_objects.push(new_game_object);
       }
