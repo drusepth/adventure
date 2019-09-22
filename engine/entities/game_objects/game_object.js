@@ -26,14 +26,14 @@ class GameObject {
     return createVector(this.x, this.y);
   }
 
-  interact_with(who_captured) {
+  interact_with(other_object) {
     var coordinates_to_paint = this.reward_coordinate_vectors();
     for (var i = 0; i < coordinates_to_paint.length; i++) {
       world[coordinates_to_paint[i]] = this.reward;
     }
 
     // Re-use this game_object instead of making a new one + garbage collecting
-    this.set_position(random_location());
+    this.set_position(random_location_in_viewport());
     this.randomize_color();
   }
 

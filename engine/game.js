@@ -1,11 +1,12 @@
 var player;
-var tile_scale = 16;
 var vision_radius;
-var draw_world_grid = true;
-var draw_player = true;
-var draw_game_objects = true;
-var game_paused = false;
 
+var tile_scale        = preferences.graphics.tile_pixels;
+var draw_world_grid   = preferences.graphics.draw_world_grid;
+var draw_player       = preferences.graphics.draw_player;
+var draw_game_objects = preferences.graphics.draw_game_objects;
+
+var game_paused = false;
 var game_object_count = 25;
 var game_objects = [];
 var world;
@@ -14,13 +15,13 @@ var tick_index = 0;
 
 function setup() {
   canvas = createCanvas(
-    floor(window.innerWidth / tile_scale) * tile_scale + tile_scale,
+    floor(window.innerWidth  / tile_scale) * tile_scale + tile_scale,
     floor(window.innerHeight / tile_scale) * tile_scale + tile_scale
   );
   canvas.parent('game');
-  frameRate(60);
+  frameRate(preferences.graphics.frames_per_second);
 
-  vision_radius = floor(height / tile_scale) * floor(width / tile_scale) / random(300, 400);
+  vision_radius = floor(height / tile_scale) * floor(width / tile_scale);
 
   // Create player
   player = new Player();
@@ -29,13 +30,13 @@ function setup() {
   world = new World();
   for (var i = 0; i < game_object_count; i++) {
     var game_object = new GameObject();
-    game_object.set_position(random_location());
+    game_object.set_position(random_location_in_viewport());
     game_object.randomize_color();
     game_objects.push(game_object);
   }
 }
 
-function random_location() {
+function random_location_in_viewport() {
   return createVector(
     floor(random(player.x - vision_radius, player.x + vision_radius)),
     floor(random(player.y - vision_radius, player.y + vision_radius))
@@ -43,26 +44,27 @@ function random_location() {
 }
 
 function draw() {
-  background(25, 105, 255);
+  background(preferences.graphics.background_rgb);
+
   if (!game_paused) {
     player.update();
   }
 
   // Determine the area in which we want to render
-  var cols                  = floor(width  / tile_scale);
-  var rows                  = floor(height / tile_scale);
+  var cols_rendering        = floor(width  / tile_scale);
+  var rows_rendering        = floor(height / tile_scale);
   var upper_left_boundary   = createVector(
-    floor(player.x - cols / 2),
-    floor(player.y - rows / 2)
+    floor(player.x - cols_rendering / 2),
+    floor(player.y - rows_rendering / 2)
   );
   // We render 1 extra square down and right to make sure we draw to window edge
   var bottom_right_boundary = createVector(
-    1 + floor(player.x + cols / 2),
-    1 + floor(player.y + rows / 2)
+    1 + floor(player.x + cols_rendering / 2),
+    1 + floor(player.y + rows_rendering / 2)
   );
 
   // Shift our rendering area to put our protagonist at the center of it
-  var center_point          = createVector(floor(cols / 2), floor(rows / 2));
+  var center_point          = createVector(floor(cols_rendering / 2), floor(rows_rendering / 2));
   var x_translation         = player.x - center_point.x;
   var y_translation         = player.y - center_point.y;
 
@@ -72,12 +74,15 @@ function draw() {
   // Draw this visible chunk of the world for the player!
   for (var y = upper_left_boundary.y; y < bottom_right_boundary.y; y++) {
     for (var x = upper_left_boundary.x; x < bottom_right_boundary.x; x++) {
-      var this_cell_position = createVector(x, y);
-      var relative_coordinates = createVector(this_cell_position.x - x_translation, this_cell_position.y - y_translation);
+      var this_cell_position   = createVector(x, y);
+      var relative_coordinates = createVector(
+        this_cell_position.x - x_translation, 
+        this_cell_position.y - y_translation
+      );
+
       var cell_data = world.tiles[this_cell_position] || null;
       if (cell_data === null) {
-        world.tiles[this_cell_position] = World.random_tile(cell_data);
-        cell_data = world.tiles[this_cell_position];
+        cell_data = world.initialize_cell(this_cell_position);
       }
 
       if (cell_data !== null) {

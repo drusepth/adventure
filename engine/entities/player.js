@@ -7,8 +7,8 @@ class Player {
     this.heartrate = 25;
     this.party_members = [];
     this.party_total   = 0;
-    this.height = 1;
-    this.width  = 1;
+    this.height = 1 * preferences.graphics.game_object_scale;
+    this.width  = 1 * preferences.graphics.game_object_scale;
   }
 
   // Preload images (needs a local server because cors lol)
